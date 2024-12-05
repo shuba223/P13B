@@ -1,5 +1,7 @@
 #include <iostream>
 #include <math.h>
+#include <string>
+#include <iomanip>
 using namespace std;
 
 bool isLeapYear(int year);
@@ -29,40 +31,55 @@ int dayOfWeek(int month, int day, int year);
 int main() {
     int year = 0;
     int month = 0;
-    int day = 0;
     string monthName = "";
     string dayName = "";
+
+    //                          Sa Fr Th We Tu Mo Su
+    // returned by DoW funct.:  00 01 02 03 04 05 06 
+    // character positions:     012345678901234567890123456789012345678
+    string calendar[6] = { "                   1  2  3  4  5  6  7 ",
+                           " 2  3  4  5  6  7  8  9 10 11 12 13 14 ",
+                           " 9 10 11 12 13 14 15 16 17 18 19 20 21 ",
+                           "16 17 18 19 20 21 22 23 24 25 26 27 28 ",
+                           "23 24 25 26 27 28 29 30 31             ",
+                           "30 31                                  " };
+
     while (true) {
-        cout << "Enter a date or Q to quit: ";
-        cin >> month >> day >> year;
+        cout << "Enter a month and a year or Q to quit: ";
+        cin >> month >> year;
         if (cin.fail()) break;
 
-        int weekday = dayOfWeek(month, day, year);
+        int firstDay = dayOfWeek(month, 1, year);
 
         switch (month) {
-        case 1: monthName = "January"; break;
-        case 2: monthName = "February"; break;
-        case 3: monthName = "March"; break;
-        case 4: monthName = "April"; break;
-        case 5: monthName = "May"; break;
-        case 6: monthName = "June"; break;
-        case 7: monthName = "July"; break;
-        case 8: monthName = "August"; break;
+        case 1: monthName = "January";   break;
+        case 2: monthName = "February";  break;
+        case 3: monthName = "March";     break;
+        case 4: monthName = "April";     break;
+        case 5: monthName = "May";       break;
+        case 6: monthName = "June";      break;
+        case 7: monthName = "July";      break;
+        case 8: monthName = "August";    break;
         case 9: monthName = "September"; break;
-        case 10: monthName = "October"; break;
-        case 11: monthName = "November"; break;
-        case 12: monthName = "December"; break;
+        case 10: monthName = "October";   break;
+        case 11: monthName = "November";  break;
+        case 12: monthName = "December";  break;
         }
-        switch (weekday) {
-        case 0: dayName = "Saturday"; break;
-        case 1: dayName = "Sunday"; break;
-        case 2: dayName = "Monday"; break;
-        case 3: dayName = "Tuesday"; break;
-        case 4: dayName = "Wednesday"; break;
-        case 5: dayName = "Thursday"; break;
-        case 6: dayName = "Friday"; break;
+
+        int days = daysInMonth(month, year);
+        int currentDay = 1;
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 7; j++) {
+                if (i == 0 && j < firstDay - 1) { // If it's the first week and we're before the first day of the month
+                    cout << "   "; // Print empty space
+                }
+                else if (currentDay <= days) { // If we're within the valid range of days for the month
+                    cout << setw(2) << currentDay << " ";
+                    currentDay++;
+                }
+            }
+            cout << endl;
         }
-        cout << dayName << ", " << monthName << " " << day << ", " << year << endl;
     }
 }
 
