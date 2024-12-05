@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 using namespace std;
 
 bool isLeapYear(int year);
@@ -16,14 +17,27 @@ int daysInMonth(int month, int year);
     @return either 28, 29, 30, or 31, based on month and (leap) year
 */
 
+int dayOfWeek(int month, int day, int year);
+/**
+    dayOfWeek - Computes the weekday of a given date.
+    @param year the year
+    @param month the month (1 = January ... 12 = December)
+    @param day the day of the month
+    @return the weekday (0 = Saturday ... 6 = Friday)
+*/
+
 int main() {
     int year = 0;
     int month = 0;
+    int day = 0;
     string monthName = "";
+    string dayName = "";
     while (true) {
-        cout << "Enter a month and a year or Q to quit: ";
-        cin >> month >> year;
+        cout << "Enter a date or Q to quit: ";
+        cin >> month >> day >> year;
         if (cin.fail()) break;
+
+        int weekday = dayOfWeek(month, day, year);
 
         switch (month) {
         case 1: monthName = "January"; break;
@@ -39,7 +53,16 @@ int main() {
         case 11: monthName = "November"; break;
         case 12: monthName = "December"; break;
         }
-        cout << monthName << " " << year << " has " << daysInMonth(month, year) << " days." << endl;
+        switch (weekday) {
+        case 0: dayName = "Saturday"; break;
+        case 1: dayName = "Sunday"; break;
+        case 2: dayName = "Monday"; break;
+        case 3: dayName = "Tuesday"; break;
+        case 4: dayName = "Wednesday"; break;
+        case 5: dayName = "Thursday"; break;
+        case 6: dayName = "Friday"; break;
+        }
+        cout << dayName << ", " << monthName << " " << day << ", " << year << endl;
     }
 }
 
@@ -63,4 +86,14 @@ int daysInMonth(int month, int year) {
         }
     }
     return 31;
+}
+
+int dayOfWeek(int month, int day, int year) {
+    int modMonth = month;
+    int modYear = year;
+    if (month == 1 || month == 2) {
+        modMonth += 12;
+        modYear--;
+    }
+    return (day + (((modMonth + 1) * 26) / 10) + modYear + (modYear / 4) + 6 * (modYear / 100) + (modYear / 400)) % 7;
 }
